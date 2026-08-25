@@ -4,17 +4,17 @@ export default function VerificationPage() {
   return (
     <div className="space-y-8 pb-12 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-display-md font-bold text-primary flex items-center gap-3">
-          <ShieldCheck className="h-10 w-10 text-secondary" />
+        <h1 className="text-headline-lg sm:text-display-md font-bold text-primary flex items-center gap-3">
+          <ShieldCheck className="h-8 w-8 sm:h-10 sm:w-10 text-secondary shrink-0" />
           Verification Pathway
         </h1>
-        <p className="text-body-lg text-on-surface-variant mt-2 max-w-3xl">
+        <p className="text-body-md sm:text-body-lg text-on-surface-variant mt-2 max-w-3xl">
           Understand how KarboNova prepares your data for rigorous, independent environmental verification.
         </p>
       </div>
 
       <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
-        <div className="bg-primary px-8 py-6 flex items-start gap-4">
+        <div className="bg-primary px-6 sm:px-8 py-6 flex flex-col sm:flex-row items-start gap-4">
           <Info className="w-6 h-6 text-secondary shrink-0 mt-1" />
           <div>
             <h3 className="text-headline-sm font-bold text-on-primary">Regulatory Credibility</h3>
@@ -24,14 +24,14 @@ export default function VerificationPage() {
           </div>
         </div>
 
-        <div className="p-12">
-          <h2 className="text-headline-md font-bold text-primary text-center mb-16">The Carbon Value Workflow</h2>
+        <div className="p-6 sm:p-12">
+          <h2 className="text-headline-sm sm:text-headline-md font-bold text-primary text-center mb-12 sm:mb-16">The Carbon Value Workflow</h2>
           
           <div className="relative">
-            {/* Connecting Line */}
-            <div className="absolute top-1/2 left-8 right-8 h-1 bg-surface-container-high -translate-y-1/2 hidden md:block"></div>
+            {/* Connecting Line (Hidden on Mobile) */}
+            <div className="absolute top-1/2 left-8 right-8 h-1 bg-surface-container-high -translate-y-1/2 hidden md:block z-0"></div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 relative z-10">
               {/* Step 1 */}
               <div className="bg-surface-container-lowest border-2 border-primary/20 rounded-xl p-6 relative group hover:border-secondary transition-colors shadow-sm">
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-headline-sm shadow-md group-hover:bg-secondary transition-colors">
@@ -62,7 +62,7 @@ export default function VerificationPage() {
               </div>
 
               {/* Step 2 */}
-              <div className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-6 relative opacity-70 hover:opacity-100 transition-opacity border-dashed">
+              <div className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-6 relative opacity-80 hover:opacity-100 transition-opacity border-dashed">
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-headline-sm border border-outline-variant/50">
                   2
                 </div>
@@ -87,7 +87,7 @@ export default function VerificationPage() {
               </div>
 
               {/* Step 3 */}
-              <div className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-6 relative opacity-70 hover:opacity-100 transition-opacity border-dashed">
+              <div className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-6 relative opacity-80 hover:opacity-100 transition-opacity border-dashed">
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-headline-sm border border-outline-variant/50">
                   3
                 </div>

@@ -1,11 +1,15 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Search, Bell, Building2, UserCircle, Check, X, LogOut, Settings, HelpCircle, FileText, Sparkles, FolderKanban } from 'lucide-react';
+import { Search, Bell, Building2, UserCircle, Check, X, LogOut, Settings, HelpCircle, FileText, Sparkles, FolderKanban, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export function TopBar() {
+interface TopBarProps {
+  onMenuToggle?: () => void;
+}
+
+export function TopBar({ onMenuToggle }: TopBarProps) {
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -56,10 +60,20 @@ export function TopBar() {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-outline-variant/20 bg-surface px-8 shadow-sm relative z-30">
-      {/* Search Bar */}
-      <div className="flex flex-1 items-center gap-4">
-        <div ref={searchRef} className="relative w-96">
+    <header className="flex h-16 items-center justify-between border-b border-outline-variant/20 bg-surface px-4 sm:px-8 shadow-sm relative z-30">
+      {/* Mobile Menu Button & Search */}
+      <div className="flex flex-1 items-center gap-3">
+        {onMenuToggle && (
+          <button 
+            onClick={onMenuToggle}
+            className="lg:hidden p-2 rounded-lg text-primary hover:bg-surface-container transition-colors"
+            aria-label="Open Navigation Menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        )}
+
+        <div ref={searchRef} className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-outline" />
           <input
             type="text"
@@ -69,7 +83,7 @@ export function TopBar() {
               setShowSearchResults(true);
             }}
             onFocus={() => setShowSearchResults(true)}
-            placeholder="Search projects, evidence, or methodologies..."
+            placeholder="Search projects, evidence..."
             className="w-full rounded-md border border-outline-variant/50 bg-surface-container-lowest py-2 pl-10 pr-4 text-body-sm text-on-surface focus:border-secondary focus:outline-none focus:ring-1 focus:ring-secondary"
           />
           {searchQuery && (
@@ -97,16 +111,16 @@ export function TopBar() {
                       className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-container-low text-left transition-colors group"
                     >
                       <div className="flex items-center gap-3">
-                        <result.icon className="h-4 w-4 text-secondary" />
-                        <span className="text-body-sm font-medium text-primary group-hover:text-secondary">{result.title}</span>
+                        <result.icon className="h-4 w-4 text-secondary shrink-0" />
+                        <span className="text-body-sm font-medium text-primary group-hover:text-secondary truncate">{result.title}</span>
                       </div>
-                      <span className="text-[10px] uppercase font-bold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">{result.type}</span>
+                      <span className="text-[10px] uppercase font-bold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded shrink-0">{result.type}</span>
                     </button>
                   ))}
                 </div>
               ) : (
                 <div className="p-4 text-center text-body-sm text-on-surface-variant">
-                  No matching results found for "{searchQuery}"
+                  No matching results for "{searchQuery}"
                 </div>
               )}
             </div>
@@ -114,23 +128,23 @@ export function TopBar() {
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
-        {/* Notification Icon & Dropdown */}
+      <div className="flex items-center gap-3 sm:gap-6">
+        {/* Notification Icon */}
         <div ref={notifRef} className="relative">
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative text-on-surface-variant hover:text-primary transition-colors p-1"
+            className="relative text-on-surface-variant hover:text-primary transition-colors p-1.5"
           >
             <Bell className="h-5 w-5" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] text-on-error font-bold">
+              <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] text-on-error font-bold">
                 {unreadCount}
               </span>
             )}
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 top-full mt-2 w-80 bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-lg overflow-hidden z-50">
+            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-lg overflow-hidden z-50">
               <div className="p-4 border-b border-outline-variant/20 flex items-center justify-between">
                 <h3 className="text-body-sm font-bold text-primary">Notifications</h3>
                 {unreadCount > 0 && (
@@ -154,22 +168,21 @@ export function TopBar() {
           )}
         </div>
         
-        <div className="h-8 w-px bg-outline-variant/30"></div>
+        <div className="h-8 w-px bg-outline-variant/30 hidden sm:block"></div>
         
         {/* Profile Dropdown */}
         <div ref={profileRef} className="relative">
           <button 
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-on-primary-container shrink-0">
               <Building2 className="h-5 w-5" />
             </div>
-            <div className="flex flex-col text-left hidden sm:flex">
+            <div className="flex flex-col text-left hidden md:flex">
               <span className="text-body-sm font-semibold text-primary leading-tight">Acme Manufacturing</span>
               <span className="text-[11px] text-on-surface-variant leading-tight">Free Plan</span>
             </div>
-            <UserCircle className="h-6 w-6 text-on-surface-variant ml-1" />
           </button>
 
           {showProfileMenu && (
