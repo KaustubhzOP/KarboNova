@@ -19,7 +19,7 @@ import {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [role, setRole] = useState<'admin' | 'auditor' | 'bank'>('admin');
+  const [role, setRole] = useState<'msme' | 'auditor' | 'bank'>('msme');
   const [email, setEmail] = useState('admin@acmemanufacturing.in');
   const [password, setPassword] = useState('password123');
   const [showPassword, setShowPassword] = useState(false);
@@ -27,9 +27,9 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleRoleChange = (selectedRole: 'admin' | 'auditor' | 'bank') => {
+  const handleRoleChange = (selectedRole: 'msme' | 'auditor' | 'bank') => {
     setRole(selectedRole);
-    if (selectedRole === 'admin') {
+    if (selectedRole === 'msme') {
       setEmail('admin@acmemanufacturing.in');
       setPassword('password123');
     } else if (selectedRole === 'auditor') {
@@ -111,15 +111,15 @@ export default function LoginPage() {
             <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded-2xl w-full">
               <button
                 type="button"
-                onClick={() => handleRoleChange('admin')}
+                onClick={() => handleRoleChange('msme')}
                 className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-bold transition-all cursor-pointer w-full ${
-                  role === 'admin' 
+                  role === 'msme' 
                     ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
                     : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
                 }`}
               >
                 <Building2 className="w-4 h-4 mb-1 shrink-0" />
-                <span className="truncate w-full text-center">Admin</span>
+                <span className="truncate w-full text-center">MSME</span>
               </button>
 
               <button
@@ -157,7 +157,7 @@ export default function LoginPage() {
             className="w-full mb-5 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 transition-colors cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Auto-fill {role === 'admin' ? 'Facility Admin' : role === 'auditor' ? 'Verifier' : 'SIDBI Bank'} Credentials</span>
+            <span className="truncate">Auto-fill {role === 'msme' ? 'MSME Facility' : role === 'auditor' ? 'Verifier' : 'SIDBI Bank'} Credentials</span>
           </button>
 
           {/* Error Banner */}
