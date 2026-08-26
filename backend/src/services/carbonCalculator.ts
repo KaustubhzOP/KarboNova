@@ -37,7 +37,10 @@ export class CarbonCalculatorService {
     let dgFraction = input.primaryPowerSource?.includes('Diesel Generator') ? 0.05 : 0.0;
     const dgReduction = baselineEmissions * dgFraction;
 
-    const estimatedReduction = Math.round(solarReduction + motorReduction + dgReduction);
+    const roundedSolar = Math.round(solarReduction);
+    const roundedMotor = Math.round(motorReduction);
+    const roundedDg = Math.round(dgReduction);
+    const estimatedReduction = roundedSolar + roundedMotor + roundedDg;
 
     let readiness = 20;
     if (input.electricityBillsAvailable?.includes('12 months')) readiness += 40;
@@ -50,9 +53,9 @@ export class CarbonCalculatorService {
       baselineEmissions: Math.round(baselineEmissions),
       estimatedKwh: Math.round(estimatedKwh),
       estimatedReduction,
-      solarReduction: Math.round(solarReduction),
-      motorReduction: Math.round(motorReduction),
-      dgReduction: Math.round(dgReduction),
+      solarReduction: roundedSolar,
+      motorReduction: roundedMotor,
+      dgReduction: roundedDg,
       carbonReadiness: readiness,
       confidence: readiness >= 70 ? 'High' : readiness >= 45 ? 'Medium' : 'Low',
       recommendedMethodology: 'ACM0002 / AMS-I.D. Grid-connected renewable electricity generation',

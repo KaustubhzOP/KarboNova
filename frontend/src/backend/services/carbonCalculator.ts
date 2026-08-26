@@ -58,7 +58,10 @@ export class CarbonCalculatorService {
     }
     const dgReduction = baselineEmissions * dgFraction;
 
-    const estimatedReduction = Math.round(solarReduction + motorReduction + dgReduction);
+    const roundedSolar = Math.round(solarReduction);
+    const roundedMotor = Math.round(motorReduction);
+    const roundedDg = Math.round(dgReduction);
+    const estimatedReduction = roundedSolar + roundedMotor + roundedDg;
 
     // 5. Evidence Completeness (%) & Confidence Calculation
     let evidenceCompleteness = 20; // Base baseline score
@@ -90,9 +93,9 @@ export class CarbonCalculatorService {
       baselineEmissions: Math.round(baselineEmissions),
       estimatedKwh: Math.round(estimatedKwh),
       estimatedReduction,
-      solarReduction: Math.round(solarReduction),
-      motorReduction: Math.round(motorReduction),
-      dgReduction: Math.round(dgReduction),
+      solarReduction: roundedSolar,
+      motorReduction: roundedMotor,
+      dgReduction: roundedDg,
       evidenceCompleteness,
       confidence,
       recommendedProjects
