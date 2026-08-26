@@ -196,4 +196,50 @@ export class ApiController {
 
     return res.json(result);
   }
+
+  public static async createProject(req: Request, res: Response) {
+    try {
+      const { id, name, description, status, estimatedReduction, evidenceDocsCount, readiness } = req.body;
+      const projId = id || (name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '') || `proj-${Date.now()}`;
+
+      await pool.query(`
+        INSERT INTO projects 
+        (id, name, description, status, estimated_reduction, evidence_docs_count, readiness, last_updated)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        ON CONFLICT (id) DO UPDATE SET
+          name = EXCLUDED.name,
+          description = EXCLUDED.description,
+          status = EXCLUDED.status,
+          estimated_reduction = EXCLUDED.estimated_reduction,
+          readiness = EXCLUDED.readiness,
+          last_updated = EXCLUDED.last_updated
+      `, [
+        projId,
+        name || 'New Decarbonization Project',
+        description || 'Carbon reduction initiative.',
+        status || 'Documentation',
+        estimatedReduction || 50,
+        evidenceDocsCount || '0/10',
+        readiness || 10,
+        'Just now'
+      ]);
+
+      return res.json({
+        success: true,
+        project: {
+          id: projId,
+          name,
+          description,
+          status: status || 'Documentation',
+          estimatedReduction: Number(estimatedReduction) || 50,
+          evidenceDocsCount: evidenceDocsCount || '0/10',
+          readiness: Number(readiness) || 10,
+          lastUpdated: 'Just now'
+        }
+      });
+    } catch (err) {
+      console.error('PostgreSQL createProject error:', err);
+      return res.status(500).json({ error: 'Failed to create project' });
+    }
+  }
 }

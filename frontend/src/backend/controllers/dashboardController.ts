@@ -58,6 +58,33 @@ export class DashboardController {
     ];
   }
 
+  public static async createProject(projectData: Partial<Project>): Promise<Project> {
+    try {
+      const res = await fetch(`${BACKEND_URL}/projects/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projectData),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.project) return data.project;
+      }
+    } catch (err) {
+      console.warn('Frontend failed to call backend createProject, fallback to local object', err);
+    }
+
+    return {
+      id: projectData.id || `proj-${Date.now()}`,
+      name: projectData.name || 'New Project',
+      description: projectData.description || 'Carbon reduction project',
+      status: projectData.status || 'Documentation',
+      estimatedReduction: Number(projectData.estimatedReduction) || 50,
+      evidenceDocsCount: projectData.evidenceDocsCount || '0/10',
+      readiness: Number(projectData.readiness) || 10,
+      lastUpdated: 'Just now'
+    };
+  }
+
   public static async getEvidenceList(): Promise<EvidenceDocument[]> {
     try {
       const res = await fetch(`${BACKEND_URL}/evidence`, { cache: 'no-store' });
