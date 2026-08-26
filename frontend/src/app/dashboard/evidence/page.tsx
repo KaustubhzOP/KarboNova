@@ -319,9 +319,15 @@ export default function EvidenceVaultPage() {
 
       {/* Document Preview Modal */}
       {previewDoc && (
-        <div className="fixed inset-0 z-50 bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/30 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low">
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          style={{ width: '100vw', height: '100vh', top: 0, left: 0 }}
+        >
+          <div 
+            className="bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/40 overflow-hidden my-auto relative z-10 flex flex-col max-h-[90vh]"
+            style={{ width: '100%', maxWidth: '680px', boxSizing: 'border-box' }}
+          >
+            <div className="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low shrink-0">
               <div className="flex items-center gap-3">
                 {previewDoc.fileData && previewDoc.fileData.startsWith('data:image') ? (
                   <ImageIcon className="w-6 h-6 text-secondary" />
@@ -329,35 +335,35 @@ export default function EvidenceVaultPage() {
                   <FileText className="w-6 h-6 text-secondary" />
                 )}
                 <div>
-                  <h3 className="text-headline-sm font-bold text-primary">{previewDoc.name}</h3>
+                  <h3 className="text-headline-sm font-bold text-primary truncate max-w-md">{previewDoc.name}</h3>
                   <p className="text-xs text-on-surface-variant">{previewDoc.category} Document • {previewDoc.size}</p>
                 </div>
               </div>
               <button 
                 onClick={() => setPreviewDoc(null)}
-                className="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors"
+                className="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="p-8 space-y-6">
-              <div className="bg-surface-container p-6 rounded-xl border border-outline-variant/20 space-y-4">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
+              <div className="bg-surface-container/30 p-5 rounded-2xl border border-outline-variant/20">
                 <div className="grid grid-cols-2 gap-4 text-body-sm">
                   <div>
-                    <span className="text-xs text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Source</span>
+                    <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Source</span>
                     <span className="font-bold text-primary">{previewDoc.source}</span>
                   </div>
                   <div>
-                    <span className="text-xs text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Uploaded Date</span>
+                    <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Uploaded Date</span>
                     <span className="font-bold text-primary">{previewDoc.date}</span>
                   </div>
                   <div>
-                    <span className="text-xs text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Linked Project</span>
+                    <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Linked Project</span>
                     <span className="font-bold text-primary">{previewDoc.project}</span>
                   </div>
                   <div>
-                    <span className="text-xs text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Verification Status</span>
+                    <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider block mb-1">Verification Status</span>
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold ${
                       previewDoc.status === 'Verified' ? 'bg-secondary/10 text-secondary' : 'bg-surface-container-high text-on-surface-variant'
                     }`}>
@@ -367,34 +373,51 @@ export default function EvidenceVaultPage() {
                 </div>
               </div>
 
-              {previewDoc.fileData && previewDoc.fileData.startsWith('data:image') ? (
-                <div className="border border-outline-variant/30 rounded-xl p-4 text-center bg-surface-container-low flex items-center justify-center min-h-[220px]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={previewDoc.fileData} 
-                    alt={previewDoc.name} 
-                    className="max-h-72 w-auto max-w-full rounded-lg object-contain shadow-md border border-outline-variant/20" 
-                  />
-                </div>
+              {/* LIVE FILE PREVIEWS */}
+              {previewDoc.fileData ? (
+                previewDoc.fileData.startsWith('data:image') || previewDoc.fileType?.includes('image') || previewDoc.name.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                  <div className="border border-outline-variant/30 rounded-2xl p-4 text-center bg-surface-container-low flex items-center justify-center min-h-[250px]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={previewDoc.fileData} 
+                      alt={previewDoc.name} 
+                      className="max-h-80 w-auto max-w-full rounded-xl object-contain shadow-md border border-outline-variant/20" 
+                    />
+                  </div>
+                ) : previewDoc.fileData.startsWith('data:application/pdf') || previewDoc.name.endsWith('.pdf') ? (
+                  <div className="border border-outline-variant/30 rounded-2xl overflow-hidden bg-surface-container-low h-80 shadow-inner">
+                    <iframe 
+                      src={previewDoc.fileData} 
+                      title={previewDoc.name} 
+                      className="w-full h-full border-none rounded-2xl"
+                    />
+                  </div>
+                ) : (
+                  <div className="border border-dashed border-outline-variant/50 rounded-2xl p-8 text-center bg-surface-container-low space-y-2">
+                    <FileText className="w-12 h-12 text-secondary mx-auto opacity-80" />
+                    <p className="text-body-md font-bold text-primary">{previewDoc.name}</p>
+                    <p className="text-xs text-on-surface-variant">Document indexed in KarboNova Evidence Vault.</p>
+                  </div>
+                )
               ) : (
-                <div className="border border-dashed border-outline-variant/50 rounded-xl p-12 text-center bg-surface-container-low">
-                  <FileText className="w-16 h-16 text-secondary mx-auto mb-3 opacity-80" />
-                  <p className="text-body-md font-bold text-primary">Compliance Verification File Preview</p>
-                  <p className="text-xs text-on-surface-variant mt-1">This document has been indexed in the KarboNova Evidence Layer.</p>
+                <div className="border border-dashed border-outline-variant/50 rounded-2xl p-8 text-center bg-surface-container-low space-y-2">
+                  <FileText className="w-12 h-12 text-secondary mx-auto opacity-80" />
+                  <p className="text-body-md font-bold text-primary">{previewDoc.name}</p>
+                  <p className="text-xs text-on-surface-variant">Sample compliance file record ready for auditor verification.</p>
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-outline-variant/20 bg-surface-container-low flex justify-end gap-3">
+            <div className="p-4 border-t border-outline-variant/20 bg-surface-container-low flex justify-end gap-3 shrink-0">
               <button 
                 onClick={() => setPreviewDoc(null)}
-                className="px-4 py-2 border border-outline-variant rounded-lg font-bold text-body-sm text-primary hover:bg-surface-container transition-colors"
+                className="px-4 py-2 border border-outline-variant rounded-xl font-bold text-body-sm text-primary hover:bg-surface-container transition-colors cursor-pointer"
               >
                 Close
               </button>
               <button 
                 onClick={() => { handleDownload(previewDoc); setPreviewDoc(null); }}
-                className="px-4 py-2 bg-secondary text-on-secondary rounded-lg font-bold text-body-sm hover:bg-[#005049] transition-colors shadow-sm flex items-center gap-2"
+                className="px-5 py-2 bg-secondary text-on-secondary rounded-xl font-bold text-body-sm hover:bg-[#005049] transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
               >
                 <Download className="w-4 h-4" /> Download File
               </button>
