@@ -58,99 +58,100 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-[#09101d] text-slate-100 font-sans antialiased relative overflow-hidden">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 md:p-10 bg-[#080e1a] text-slate-100 font-sans antialiased relative overflow-x-hidden">
       
-      {/* Background Ambient Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Glow Effects */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] sm:w-[650px] sm:h-[650px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      {/* Main Container */}
-      <div className="relative z-10 w-full max-w-lg mx-auto">
+      {/* Main Responsive Wrapper */}
+      <div className="relative z-10 w-full max-w-md mx-auto my-auto">
         
-        {/* Top Brand Header */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3 mb-4 group">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/10 group-hover:scale-105 transition-transform">
-              <Leaf className="w-7 h-7 text-emerald-400" />
+        {/* Brand Header */}
+        <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
+          <Link href="/" className="inline-flex items-center gap-3 mb-3 group">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/10 group-hover:scale-105 transition-transform">
+              <Leaf className="w-6 h-6 text-emerald-400" />
             </div>
             <div className="text-left">
-              <span className="text-2xl font-bold text-white tracking-tight block">KarboNova</span>
-              <span className="text-xs text-emerald-400 font-semibold tracking-wider block">MSME CARBON PLATFORM</span>
+              <span className="text-xl sm:text-2xl font-bold text-white tracking-tight block">KarboNova</span>
+              <span className="text-[10px] sm:text-xs text-emerald-400 font-semibold tracking-wider block uppercase">MSME Carbon Operating System</span>
             </div>
           </Link>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-xs text-emerald-300 font-medium">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            India CEA Grid Compliant • 0.716 kg CO₂e/kWh
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-[11px] sm:text-xs text-emerald-300 font-medium shadow-inner">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span>India CEA Grid Compliant • 0.716 kg CO₂e/kWh</span>
           </div>
         </div>
 
         {/* Card Body */}
-        <div className="bg-[#0f172a]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60">
+        <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80">
           
-          <div className="mb-6 text-center sm:text-left">
+          <div className="mb-6 text-left">
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              Welcome back to KarboNova
+              Sign in to your account
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Sign in to manage your facility emissions and compliance evidence.
+              Select your role and enter credentials to access your carbon dashboard.
             </p>
           </div>
 
-          {/* Role Selection */}
-          <div className="mb-5">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-              Select Login Role
+          {/* Role Selection Tabs */}
+          <div className="mb-5 space-y-2">
+            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              Operating Role
             </label>
-            <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800">
+            <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded-2xl">
               <button
                 type="button"
                 onClick={() => handleRoleChange('admin')}
-                className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
                   role === 'admin' 
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
                 }`}
               >
-                <Building2 className="w-4 h-4 shrink-0" />
-                <span className="truncate">Facility Admin</span>
+                <Building2 className="w-3.5 h-3.5 mb-1 shrink-0" />
+                <span className="truncate w-full text-center">Admin</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleRoleChange('auditor')}
-                className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
                   role === 'auditor' 
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
                 }`}
               >
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span className="truncate">Auditor</span>
+                <CheckCircle2 className="w-3.5 h-3.5 mb-1 shrink-0" />
+                <span className="truncate w-full text-center">Auditor</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleRoleChange('bank')}
-                className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
                   role === 'bank' 
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
                 }`}
               >
-                <Briefcase className="w-4 h-4 shrink-0" />
-                <span className="truncate">Financier</span>
+                <Briefcase className="w-3.5 h-3.5 mb-1 shrink-0" />
+                <span className="truncate w-full text-center">Bank</span>
               </button>
             </div>
           </div>
 
-          {/* Quick Fill Button */}
+          {/* Auto-fill Helper Button */}
           <button
             type="button"
             onClick={() => handleRoleChange(role)}
-            className="w-full mb-6 flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-900/40 transition-colors cursor-pointer"
+            className="w-full mb-5 flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 transition-colors cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span>Auto-fill Demo Credentials ({role === 'admin' ? 'Acme Manufacturing' : role === 'auditor' ? 'Certified Verifier' : 'SIDBI Green Bank'})</span>
+            <span className="truncate">Auto-fill {role === 'admin' ? 'Facility Admin' : role === 'auditor' ? 'Verifier' : 'SIDBI Bank'} Demo Credentials</span>
           </button>
 
           {/* Error Banner */}
@@ -160,15 +161,15 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Form */}
+          {/* Authentication Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             
-            <div>
-              <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5" htmlFor="email">
-                Business Email Address
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="email">
+                Business Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
                 <input 
                   type="email" 
                   id="email" 
@@ -176,22 +177,22 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
               </div>
             </div>
 
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider" htmlFor="password">
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="password">
                   Password
                 </label>
-                <a href="#" className="text-xs text-emerald-400 hover:underline font-semibold">
+                <a href="#" className="text-xs text-emerald-400 hover:underline font-medium">
                   Forgot password?
                 </a>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
                 <input 
                   type={showPassword ? 'text' : 'password'} 
                   id="password" 
@@ -199,7 +200,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-10 pr-10 py-3 bg-slate-950 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                  className="w-full pl-10 pr-10 py-2.5 sm:py-3 bg-slate-950 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 />
                 <button
                   type="button"
@@ -226,7 +227,7 @@ export default function LoginPage() {
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-950/40 disabled:opacity-70 disabled:cursor-not-allowed group cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-950/50 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed group cursor-pointer"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
@@ -241,6 +242,7 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
         </div>
 
         {/* Footer Link */}
