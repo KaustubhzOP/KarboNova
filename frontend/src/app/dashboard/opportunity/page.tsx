@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { CarbonCalculatorService } from '@/backend/services/carbonCalculator';
 import { 
   Building2, 
   Zap, 
@@ -15,7 +15,10 @@ import {
   TrendingDown, 
   Info,
   RotateCcw,
-  PlusCircle
+  PlusCircle,
+  Calculator,
+  ShieldCheck,
+  Flame
 } from 'lucide-react';
 
 export default function OpportunityAssessmentPage() {
@@ -33,6 +36,8 @@ export default function OpportunityAssessmentPage() {
     electricityBillsAvailable: 'Yes (Last 12 months)',
     equipmentInvoicesAvailable: 'Partial',
   });
+
+  const assessmentResult = CarbonCalculatorService.calculateOpportunity(formData);
 
   const steps = [
     { num: 1, title: 'Business Profile', icon: Building2 },
@@ -250,23 +255,85 @@ export default function OpportunityAssessmentPage() {
                 <CheckCircle2 className="w-8 h-8" />
               </div>
               <h2 className="text-headline-lg font-bold text-primary">Carbon Opportunity Result</h2>
-              <p className="text-body-md text-on-surface-variant mt-1">Based on your facility parameters in {formData.state}</p>
+              <p className="text-body-md text-on-surface-variant mt-1">
+                Calculated dynamically for <strong>{formData.businessName}</strong> ({formData.state}) using standard CEA & GHG Protocol guidelines.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 text-center">
                 <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Estimated Annual Reduction</div>
                 <div className="text-display-md font-bold text-secondary flex items-center justify-center gap-1">
-                  <TrendingDown className="w-7 h-7" /> 180 <span className="text-body-md font-normal text-on-surface-variant">tCO₂e/yr</span>
+                  <TrendingDown className="w-7 h-7" /> {assessmentResult.estimatedReduction} <span className="text-body-md font-normal text-on-surface-variant">tCO₂e/yr</span>
                 </div>
               </div>
               <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 text-center">
                 <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Evidence Completeness</div>
-                <div className="text-display-md font-bold text-primary">60%</div>
+                <div className="text-display-md font-bold text-primary">{assessmentResult.evidenceCompleteness}%</div>
               </div>
               <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 text-center">
                 <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Assessment Confidence</div>
-                <div className="text-display-md font-bold text-primary">High</div>
+                <div className="text-display-md font-bold text-primary">{assessmentResult.confidence}</div>
+              </div>
+            </div>
+
+            {/* Detailed Calculation Basis Breakdown */}
+            <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/30 space-y-4">
+              <div className="flex items-center gap-2 border-b border-outline-variant/20 pb-3">
+                <Calculator className="w-5 h-5 text-secondary" />
+                <h3 className="text-title-md font-bold text-primary">Calculation Basis & Formula Breakdown</h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-body-sm text-on-surface-variant">
+                <div className="bg-surface-container-lowest p-3.5 rounded-lg border border-outline-variant/20">
+                  <span className="font-bold text-primary block mb-1">1. Electricity Consumption</span>
+                  Spend Range: <strong>{formData.annualElectricitySpend}</strong><br />
+                  Est. Consumption: <strong>~{assessmentResult.estimatedKwh.toLocaleString()} kWh/yr</strong><br />
+                  <span className="text-xs text-outline">(Tariff Rate: ₹8.00/kWh benchmark)</span>
+                </div>
+
+                <div className="bg-surface-container-lowest p-3.5 rounded-lg border border-outline-variant/20">
+                  <span className="font-bold text-primary block mb-1">2. Grid Baseline Carbon Footprint</span>
+                  CEA Emission Factor: <strong>0.716 kg CO₂e/kWh</strong><br />
+                  Total Baseline: <strong>~{assessmentResult.baselineEmissions.toLocaleString()} tCO₂e/yr</strong>
+                </div>
+              </div>
+
+              <div className="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant/20 space-y-2">
+                <span className="font-bold text-primary text-body-sm block">3. Estimated Reduction Breakdown by Intervention</span>
+                <div className="space-y-1 text-body-sm">
+                  <div className="flex justify-between">
+                    <span>• Rooftop Solar PV Savings ({formData.hasSolar}):</span>
+                    <span className="font-bold text-secondary">+{assessmentResult.solarReduction} tCO₂e/yr</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>• Motor Efficiency Upgrade (IE3/IE4):</span>
+                    <span className="font-bold text-secondary">+{assessmentResult.motorReduction} tCO₂e/yr</span>
+                  </div>
+                  {assessmentResult.dgReduction > 0 && (
+                    <div className="flex justify-between">
+                      <span>• DG Optimization & Waste Heat Recovery:</span>
+                      <span className="font-bold text-secondary">+{assessmentResult.dgReduction} tCO₂e/yr</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t border-outline-variant/20 pt-2 font-bold text-primary">
+                    <span>Total Potential Opportunity:</span>
+                    <span className="text-secondary">{assessmentResult.estimatedReduction} tCO₂e/yr</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recommended Projects */}
+            <div className="space-y-3">
+              <h3 className="text-title-md font-bold text-primary">Recommended Decarbonization Projects</h3>
+              <div className="space-y-2">
+                {assessmentResult.recommendedProjects.map((proj, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg border border-outline-variant/20">
+                    <ShieldCheck className="w-5 h-5 text-secondary shrink-0" />
+                    <span className="text-body-sm font-medium text-primary">{proj}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -274,7 +341,7 @@ export default function OpportunityAssessmentPage() {
             <div className="bg-primary/5 p-4 rounded-lg flex items-start gap-3 border border-primary/10">
               <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <p className="text-xs text-primary leading-relaxed">
-                <strong>Disclaimer:</strong> This assessment provides preliminary estimates based on benchmark methodologies. It does not guarantee third-party verification or carbon credit issuance.
+                <strong>Disclaimer:</strong> This assessment provides preliminary estimates based on CEA (Central Electricity Authority) India Grid Emission factors and ISO/GHG Protocol Scope 2 standard methodologies. It does not guarantee third-party verification or carbon credit issuance.
               </p>
             </div>
           </div>

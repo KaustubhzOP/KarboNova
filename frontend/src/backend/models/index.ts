@@ -49,10 +49,16 @@ export interface AssessmentInput {
   hasSolar: string;
   hasEnergyEfficientMotors: string;
   electricityBillsAvailable: string;
+  equipmentInvoicesAvailable?: string;
 }
 
 export interface AssessmentResult {
+  baselineEmissions: number;
+  estimatedKwh: number;
   estimatedReduction: number;
+  solarReduction: number;
+  motorReduction: number;
+  dgReduction: number;
   evidenceCompleteness: number;
   confidence: 'High' | 'Medium' | 'Low';
   recommendedProjects: string[];
