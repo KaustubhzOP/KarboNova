@@ -1,7 +1,18 @@
 import { CarbonSummary, Project, EvidenceDocument } from '../models';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+
 export class DashboardController {
   public static async getSummary(): Promise<CarbonSummary> {
+    try {
+      const res = await fetch(`${BACKEND_URL}/dashboard/summary`, { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('Frontend failed to fetch backend DB summary, using fallback data', err);
+    }
+
     return {
       businessName: "Acme Manufacturing",
       passportId: "KRB-MH-000124",
@@ -14,6 +25,15 @@ export class DashboardController {
   }
 
   public static async getProjects(): Promise<Project[]> {
+    try {
+      const res = await fetch(`${BACKEND_URL}/projects`, { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('Frontend failed to fetch backend DB projects, using fallback data', err);
+    }
+
     return [
       {
         id: "solar-energy-efficiency",
@@ -39,6 +59,15 @@ export class DashboardController {
   }
 
   public static async getEvidenceList(): Promise<EvidenceDocument[]> {
+    try {
+      const res = await fetch(`${BACKEND_URL}/evidence`, { cache: 'no-store' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('Frontend failed to fetch backend DB evidence, using fallback data', err);
+    }
+
     return [
       { id: '1', name: 'MSEB_Bill_Oct2023.pdf', category: 'Electricity', date: 'Oct 15, 2023', source: 'MSEB Portal', project: 'Baseline', status: 'Verified', size: '1.2 MB' },
       { id: '2', name: 'MSEB_Bill_Nov2023.pdf', category: 'Electricity', date: 'Nov 12, 2023', source: 'MSEB Portal', project: 'Baseline', status: 'Verified', size: '1.1 MB' },
