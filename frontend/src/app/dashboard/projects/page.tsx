@@ -198,8 +198,14 @@ export default function ProjectsListPage() {
 
       {/* CREATE NEW PROJECT MODAL */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant/30 shadow-2xl w-full max-w-lg overflow-hidden">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          style={{ width: '100vw', height: '100vh', top: 0, left: 0 }}
+        >
+          <div 
+            className="bg-surface-container-lowest rounded-3xl border border-outline-variant/40 shadow-2xl overflow-hidden relative z-10 my-auto"
+            style={{ width: '100%', maxWidth: '520px', boxSizing: 'border-box' }}
+          >
             
             <div className="flex justify-between items-center p-6 border-b border-outline-variant/20 bg-surface-container-low">
               <div className="flex items-center gap-3">
