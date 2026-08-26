@@ -103,62 +103,16 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Role Selection Tabs */}
-          <div className="mb-5 space-y-2 w-full">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-              Select Operating Role
-            </label>
-            <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded-2xl w-full">
-              <button
-                type="button"
-                onClick={() => handleRoleChange('msme')}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-bold transition-all cursor-pointer w-full ${
-                  role === 'msme' 
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-                }`}
-              >
-                <Building2 className="w-4 h-4 mb-1 shrink-0" />
-                <span className="truncate w-full text-center">MSME</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleChange('auditor')}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-bold transition-all cursor-pointer w-full ${
-                  role === 'auditor' 
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-                }`}
-              >
-                <CheckCircle2 className="w-4 h-4 mb-1 shrink-0" />
-                <span className="truncate w-full text-center">Auditor</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleChange('bank')}
-                className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-xl text-xs font-bold transition-all cursor-pointer w-full ${
-                  role === 'bank' 
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/60' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-                }`}
-              >
-                <Briefcase className="w-4 h-4 mb-1 shrink-0" />
-                <span className="truncate w-full text-center">Bank</span>
-              </button>
+          {/* Operating Role Badge */}
+          <div className="mb-5 p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/20 flex items-center gap-3 w-full">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Facility Access</span>
+              <span className="text-xs font-bold text-slate-200 block">MSME Enterprise Portal</span>
             </div>
           </div>
-
-          {/* Auto-fill Helper Button */}
-          <button
-            type="button"
-            onClick={() => handleRoleChange(role)}
-            className="w-full mb-5 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 transition-colors cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Auto-fill {role === 'msme' ? 'MSME Facility' : role === 'auditor' ? 'Verifier' : 'SIDBI Bank'} Credentials</span>
-          </button>
 
           {/* Error Banner */}
           {errorMsg && (
