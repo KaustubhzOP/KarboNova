@@ -67,6 +67,8 @@ export default function ProjectsListPage() {
       });
 
       if (res.ok) {
+        const createdProject = await res.json();
+        setProjects((prev) => [createdProject, ...prev.filter((p) => p.id !== createdProject.id)]);
         setShowModal(false);
         setName('');
         setDescription('');

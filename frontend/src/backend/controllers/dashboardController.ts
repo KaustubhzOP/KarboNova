@@ -2,6 +2,29 @@ import { CarbonSummary, Project, EvidenceDocument } from '../models';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
 
+let inMemoryProjects: Project[] = [
+  {
+    id: "solar-energy-efficiency",
+    name: "Solar & Energy Efficiency",
+    description: "Rooftop solar PV installation combined with IE4 motor upgrades across primary manufacturing line.",
+    status: "Documentation",
+    estimatedReduction: 180,
+    evidenceDocsCount: "8/10",
+    readiness: 68,
+    lastUpdated: "2 days ago"
+  },
+  {
+    id: "waste-heat-recovery",
+    name: "Waste Heat Recovery",
+    description: "Implementation of heat exchangers on primary boiler exhaust to pre-heat boiler feedwater.",
+    status: "Verification",
+    estimatedReduction: 245,
+    evidenceDocsCount: "12/12",
+    readiness: 95,
+    lastUpdated: "1 week ago"
+  }
+];
+
 export class DashboardController {
   public static async getSummary(): Promise<CarbonSummary> {
     try {
@@ -28,37 +51,34 @@ export class DashboardController {
     try {
       const res = await fetch(`${BACKEND_URL}/projects`, { cache: 'no-store' });
       if (res.ok) {
-        return await res.json();
+        const fetched: Project[] = await res.json();
+        // Merge with inMemoryProjects
+        const fetchedIds = new Set(fetched.map(p => p.id));
+        const customOnly = inMemoryProjects.filter(p => !fetchedIds.has(p.id));
+        return [...fetched, ...customOnly];
       }
     } catch (err) {
       console.warn('Frontend failed to fetch backend DB projects, using fallback data', err);
     }
 
-    return [
-      {
-        id: "solar-energy-efficiency",
-        name: "Solar & Energy Efficiency",
-        description: "Rooftop solar PV installation combined with IE4 motor upgrades across primary manufacturing line.",
-        status: "Documentation",
-        estimatedReduction: 180,
-        evidenceDocsCount: "8/10",
-        readiness: 68,
-        lastUpdated: "2 days ago"
-      },
-      {
-        id: "waste-heat-recovery",
-        name: "Waste Heat Recovery",
-        description: "Implementation of heat exchangers on primary boiler exhaust to pre-heat boiler feedwater.",
-        status: "Verification",
-        estimatedReduction: 245,
-        evidenceDocsCount: "12/12",
-        readiness: 95,
-        lastUpdated: "1 week ago"
-      }
-    ];
+    return inMemoryProjects;
   }
 
   public static async createProject(projectData: Partial<Project>): Promise<Project> {
+    const newProj: Project = {
+      id: projectData.id || `proj-${Date.now()}`,
+      name: projectData.name || 'New Project',
+      description: projectData.description || 'Carbon reduction project',
+      status: (projectData.status as any) || 'Documentation',
+      estimatedReduction: Number(projectData.estimatedReduction) || 50,
+      evidenceDocsCount: projectData.evidenceDocsCount || '0/10',
+      readiness: Number(projectData.readiness) || 15,
+      lastUpdated: 'Just now'
+    };
+
+    // Prepend to inMemoryProjects
+    inMemoryProjects = [newProj, ...inMemoryProjects.filter(p => p.id !== newProj.id)];
+
     try {
       const res = await fetch(`${BACKEND_URL}/projects/create`, {
         method: 'POST',
@@ -67,22 +87,17 @@ export class DashboardController {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.project) return data.project;
+        if (data.project) {
+          // Update inMemoryProjects with server response
+          inMemoryProjects = [data.project, ...inMemoryProjects.filter(p => p.id !== data.project.id)];
+          return data.project;
+        }
       }
     } catch (err) {
-      console.warn('Frontend failed to call backend createProject, fallback to local object', err);
+      console.warn('Frontend failed to call backend createProject, using in-memory project', err);
     }
 
-    return {
-      id: projectData.id || `proj-${Date.now()}`,
-      name: projectData.name || 'New Project',
-      description: projectData.description || 'Carbon reduction project',
-      status: projectData.status || 'Documentation',
-      estimatedReduction: Number(projectData.estimatedReduction) || 50,
-      evidenceDocsCount: projectData.evidenceDocsCount || '0/10',
-      readiness: Number(projectData.readiness) || 10,
-      lastUpdated: 'Just now'
-    };
+    return newProj;
   }
 
   public static async getEvidenceList(): Promise<EvidenceDocument[]> {
