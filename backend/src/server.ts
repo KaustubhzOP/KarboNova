@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import apiRoutes from './routes/api.routes';
+import { initDb } from './config/db';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -16,6 +17,7 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api', apiRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 KarboNova Backend Server running on http://localhost:${PORT}`);
+  await initDb();
 });
