@@ -77,15 +77,15 @@
   --spacing-sidebar: 260px;
 }
 
-@utility font-display-lg { font: var(--font-display-lg); letter-spacing: -0.02em; }
-@utility font-display-md { font: var(--font-display-md); letter-spacing: -0.02em; }
-@utility font-headline-lg { font: var(--font-headline-lg); }
-@utility font-headline-md { font: var(--font-headline-md); }
-@utility font-headline-sm { font: var(--font-headline-sm); }
-@utility font-body-lg { font: var(--font-body-lg); }
-@utility font-body-md { font: var(--font-body-md); }
-@utility font-body-sm { font: var(--font-body-sm); }
-@utility font-label-md { font: var(--font-label-md); letter-spacing: 0.05em; }
+@utility font-display-lg { font-size: 48px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+@utility font-display-md { font-size: 36px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+@utility font-headline-lg { font-size: 30px; line-height: 1.3; font-weight: 600; }
+@utility font-headline-md { font-size: 24px; line-height: 1.4; font-weight: 600; }
+@utility font-headline-sm { font-size: 20px; line-height: 1.4; font-weight: 600; }
+@utility font-body-lg { font-size: 18px; line-height: 1.6; font-weight: 400; }
+@utility font-body-md { font-size: 16px; line-height: 1.6; font-weight: 400; }
+@utility font-body-sm { font-size: 14px; line-height: 1.5; font-weight: 400; }
+@utility font-label-md { font-size: 12px; line-height: 1; font-weight: 600; letter-spacing: 0.05em; }
 
 body {
   background-color: var(--color-background);
