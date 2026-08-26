@@ -53,8 +53,13 @@ export async function initDb() {
         project VARCHAR(255) NOT NULL,
         status VARCHAR(50) NOT NULL,
         size VARCHAR(50) NOT NULL,
+        file_data TEXT,
+        file_type VARCHAR(100),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      ALTER TABLE evidence_documents ADD COLUMN IF NOT EXISTS file_data TEXT;
+      ALTER TABLE evidence_documents ADD COLUMN IF NOT EXISTS file_type VARCHAR(100);
 
       CREATE TABLE IF NOT EXISTS opportunity_assessments (
         id SERIAL PRIMARY KEY,

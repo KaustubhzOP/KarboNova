@@ -80,7 +80,7 @@ export class ApiController {
 
   public static async getEvidence(req: Request, res: Response) {
     try {
-      const result = await pool.query('SELECT * FROM evidence_documents ORDER BY created_at ASC');
+      const result = await pool.query('SELECT * FROM evidence_documents ORDER BY created_at DESC');
       if (result.rows.length > 0) {
         const docs = result.rows.map(row => ({
           id: row.id,
@@ -90,7 +90,9 @@ export class ApiController {
           source: row.source,
           project: row.project,
           status: row.status,
-          size: row.size
+          size: row.size,
+          fileData: row.file_data || null,
+          fileType: row.file_type || null
         }));
         return res.json(docs);
       }
@@ -104,6 +106,65 @@ export class ApiController {
       { id: '3', name: 'Solar_Installation_Invoice.pdf', category: 'Solar', date: 'Jan 05, 2024', source: 'Vendor', project: 'Solar & Energy Efficiency', status: 'Pending Review', size: '3.4 MB' },
       { id: '4', name: 'Energy_Audit_Report.pdf', category: 'Equipment', date: 'Feb 20, 2024', source: 'Third Party', project: 'Solar & Energy Efficiency', status: 'Verified', size: '5.8 MB' },
     ]);
+  }
+
+  public static async uploadEvidence(req: Request, res: Response) {
+    try {
+      const { id, name, category, date, source, project, status, size, fileData, fileType } = req.body;
+      const docId = id || Date.now().toString();
+
+      await pool.query(`
+        INSERT INTO evidence_documents 
+        (id, name, category, date, source, project, status, size, file_data, file_type)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT (id) DO UPDATE SET
+          name = EXCLUDED.name,
+          category = EXCLUDED.category,
+          file_data = EXCLUDED.file_data,
+          file_type = EXCLUDED.file_type
+      `, [
+        docId,
+        name || 'Uploaded Document',
+        category || 'Invoices',
+        date || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+        source || 'User Upload',
+        project || 'Solar & Energy Efficiency',
+        status || 'Pending Review',
+        size || '1.0 MB',
+        fileData || null,
+        fileType || null
+      ]);
+
+      return res.json({
+        success: true,
+        document: {
+          id: docId,
+          name,
+          category,
+          date,
+          source,
+          project,
+          status,
+          size,
+          fileData,
+          fileType
+        }
+      });
+    } catch (err) {
+      console.error('PostgreSQL uploadEvidence error:', err);
+      return res.status(500).json({ error: 'Failed to save document to database' });
+    }
+  }
+
+  public static async deleteEvidence(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await pool.query('DELETE FROM evidence_documents WHERE id = $1', [id]);
+      return res.json({ success: true, id });
+    } catch (err) {
+      console.error('PostgreSQL deleteEvidence error:', err);
+      return res.status(500).json({ error: 'Failed to delete document from database' });
+    }
   }
 
   public static async calculateOpportunity(req: Request, res: Response) {

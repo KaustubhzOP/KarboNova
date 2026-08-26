@@ -38,6 +38,8 @@ export interface EvidenceDocument {
   project: string;
   status: 'Verified' | 'Pending Review';
   size: string;
+  fileData?: string;
+  fileType?: string;
 }
 
 export interface AssessmentInput {

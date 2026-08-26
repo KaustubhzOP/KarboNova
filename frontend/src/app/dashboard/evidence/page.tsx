@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { Folder, FileText, UploadCloud, Search, Filter, ShieldCheck, Clock, Download, Trash2, Eye, X, CheckCircle2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Folder, FileText, UploadCloud, Search, Filter, ShieldCheck, Clock, Download, Trash2, Eye, X, CheckCircle2, Image as ImageIcon } from 'lucide-react';
 
 interface DocFile {
   id: string;
@@ -12,10 +12,12 @@ interface DocFile {
   project: string;
   status: string;
   size: string;
+  fileData?: string;
+  fileType?: string;
 }
 
 export default function EvidenceVaultPage() {
-  const [activeFolder, setActiveFolder] = useState('Electricity');
+  const [activeFolder, setActiveFolder] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [previewDoc, setPreviewDoc] = useState<DocFile | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -32,14 +34,28 @@ export default function EvidenceVaultPage() {
     { id: '6', name: 'Waste_Disposal_Certificate.pdf', category: 'Waste', date: 'Apr 02, 2024', source: 'Municipal Auth', project: 'Process Optimization', status: 'Pending Review', size: '2.1 MB' }
   ]);
 
+  useEffect(() => {
+    fetch('/api/evidence')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFiles(data);
+        }
+      })
+      .catch(err => console.error('Error fetching evidence:', err));
+  }, []);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const uploadedFile = e.target.files[0];
+  const processUploadedFile = (uploadedFile: File) => {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const fileData = reader.result as string;
+      const fileType = uploadedFile.type || (uploadedFile.name.endsWith('.png') ? 'image/png' : uploadedFile.name.endsWith('.jpg') || uploadedFile.name.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream');
+
       const newDoc: DocFile = {
         id: Date.now().toString(),
         name: uploadedFile.name,
@@ -48,39 +64,61 @@ export default function EvidenceVaultPage() {
         source: 'User Upload',
         project: 'Solar & Energy Efficiency',
         status: 'Pending Review',
-        size: `${(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB`
+        size: `${(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB`,
+        fileData,
+        fileType
       };
-      setFiles([newDoc, ...files]);
-      showToast(`Successfully uploaded ${uploadedFile.name}`);
+
+      setFiles(prev => [newDoc, ...prev]);
+
+      try {
+        await fetch('/api/evidence', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newDoc)
+        });
+        showToast(`Successfully uploaded ${uploadedFile.name} to Database`);
+      } catch (err) {
+        showToast(`Uploaded ${uploadedFile.name} (Local)`);
+      }
+    };
+
+    reader.readAsDataURL(uploadedFile);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      processUploadedFile(e.target.files[0]);
     }
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      const newDoc: DocFile = {
-        id: Date.now().toString(),
-        name: droppedFile.name,
-        category: activeFolder === 'All' ? 'Invoices' : activeFolder,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-        source: 'User Upload',
-        project: 'Solar & Energy Efficiency',
-        status: 'Pending Review',
-        size: `${(droppedFile.size / (1024 * 1024)).toFixed(1)} MB`
-      };
-      setFiles([newDoc, ...files]);
-      showToast(`Successfully uploaded ${droppedFile.name}`);
+      processUploadedFile(e.dataTransfer.files[0]);
     }
   };
 
-  const handleDelete = (id: string, name: string) => {
-    setFiles(files.filter(f => f.id !== id));
+  const handleDelete = async (id: string, name: string) => {
+    setFiles(prev => prev.filter(f => f.id !== id));
+    try {
+      await fetch(`/api/evidence?id=${id}`, { method: 'DELETE' });
+    } catch (e) {
+      // ignore
+    }
     showToast(`Deleted ${name}`);
   };
 
-  const handleDownload = (name: string) => {
-    showToast(`Downloading ${name}...`);
+  const handleDownload = (doc: DocFile) => {
+    if (doc.fileData) {
+      const a = document.createElement('a');
+      a.href = doc.fileData;
+      a.download = doc.name;
+      a.click();
+      showToast(`Downloading ${doc.name}`);
+    } else {
+      showToast(`Downloading ${doc.name}...`);
+    }
   };
 
   const filteredFiles = files.filter(file => {
@@ -100,7 +138,7 @@ export default function EvidenceVaultPage() {
         ref={fileInputRef} 
         onChange={handleFileUpload} 
         className="hidden" 
-        accept=".pdf,.xlsx,.xls,.doc,.docx,.jpg,.png"
+        accept="image/*,.pdf,.xlsx,.xls,.doc,.docx,.csv,.txt"
       />
 
       {/* Toast Notification */}
@@ -249,7 +287,7 @@ export default function EvidenceVaultPage() {
                             <Eye className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => handleDownload(file.name)}
+                            onClick={() => handleDownload(file)}
                             className="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded" 
                             title="Download Document"
                           >
@@ -285,7 +323,11 @@ export default function EvidenceVaultPage() {
           <div className="bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/30 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95">
             <div className="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low">
               <div className="flex items-center gap-3">
-                <FileText className="w-6 h-6 text-secondary" />
+                {previewDoc.fileData && previewDoc.fileData.startsWith('data:image') ? (
+                  <ImageIcon className="w-6 h-6 text-secondary" />
+                ) : (
+                  <FileText className="w-6 h-6 text-secondary" />
+                )}
                 <div>
                   <h3 className="text-headline-sm font-bold text-primary">{previewDoc.name}</h3>
                   <p className="text-xs text-on-surface-variant">{previewDoc.category} Document • {previewDoc.size}</p>
@@ -325,11 +367,22 @@ export default function EvidenceVaultPage() {
                 </div>
               </div>
 
-              <div className="border border-dashed border-outline-variant/50 rounded-xl p-12 text-center bg-surface-container-low">
-                <FileText className="w-16 h-16 text-secondary mx-auto mb-3 opacity-80" />
-                <p className="text-body-md font-bold text-primary">Compliance Verification File Preview</p>
-                <p className="text-xs text-on-surface-variant mt-1">This document has been indexed in the KarboNova Evidence Layer.</p>
-              </div>
+              {previewDoc.fileData && previewDoc.fileData.startsWith('data:image') ? (
+                <div className="border border-outline-variant/30 rounded-xl p-4 text-center bg-surface-container-low flex items-center justify-center min-h-[220px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={previewDoc.fileData} 
+                    alt={previewDoc.name} 
+                    className="max-h-72 w-auto max-w-full rounded-lg object-contain shadow-md border border-outline-variant/20" 
+                  />
+                </div>
+              ) : (
+                <div className="border border-dashed border-outline-variant/50 rounded-xl p-12 text-center bg-surface-container-low">
+                  <FileText className="w-16 h-16 text-secondary mx-auto mb-3 opacity-80" />
+                  <p className="text-body-md font-bold text-primary">Compliance Verification File Preview</p>
+                  <p className="text-xs text-on-surface-variant mt-1">This document has been indexed in the KarboNova Evidence Layer.</p>
+                </div>
+              )}
             </div>
 
             <div className="p-4 border-t border-outline-variant/20 bg-surface-container-low flex justify-end gap-3">
@@ -340,7 +393,7 @@ export default function EvidenceVaultPage() {
                 Close
               </button>
               <button 
-                onClick={() => { handleDownload(previewDoc.name); setPreviewDoc(null); }}
+                onClick={() => { handleDownload(previewDoc); setPreviewDoc(null); }}
                 className="px-4 py-2 bg-secondary text-on-secondary rounded-lg font-bold text-body-sm hover:bg-[#005049] transition-colors shadow-sm flex items-center gap-2"
               >
                 <Download className="w-4 h-4" /> Download File
