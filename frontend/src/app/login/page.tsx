@@ -17,7 +17,8 @@ import {
   CheckCircle2, 
   Briefcase, 
   Award,
-  Globe2
+  Globe2,
+  Check
 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -57,125 +58,121 @@ export default function LoginPage() {
     setTimeout(() => {
       setIsLoading(false);
       router.push('/dashboard');
-    }, 900);
+    }, 700);
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-[#0f1715] text-on-surface overflow-hidden select-none font-sans">
-      {/* LEFT PANEL - Hero Graphic & Trust Indicators */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 overflow-hidden border-r border-outline-variant/10 bg-gradient-to-br from-[#06241e] via-[#09332a] to-[#041915]">
-        {/* Glowing Background Orbs */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-secondary/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#006a61]/30 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#080d1a] text-slate-100 font-sans antialiased">
+      
+      {/* LEFT PANEL - Brand & Visual Hero (Visible on Desktop) */}
+      <div className="lg:w-1/2 min-h-[400px] lg:min-h-screen relative flex flex-col justify-between p-8 sm:p-12 bg-gradient-to-br from-[#061e19] via-[#0b2b24] to-[#051119] border-b lg:border-b-0 lg:border-r border-slate-800/80 overflow-hidden">
+        
+        {/* Glow Effects */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Brand Header */}
         <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-secondary/20 border border-secondary/30 flex items-center justify-center shadow-lg shadow-secondary/10">
-              <Leaf className="w-6 h-6 text-secondary" />
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/10 group-hover:scale-105 transition-transform">
+              <Leaf className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
-              <span className="text-title-lg font-bold text-white tracking-tight block">KarboNova</span>
-              <span className="text-[10px] text-secondary font-semibold uppercase tracking-wider block">MSME Operating System</span>
+              <span className="text-xl font-bold text-white tracking-tight block">KarboNova</span>
+              <span className="text-xs text-emerald-400 font-semibold tracking-wide block">MSME CARBON PLATFORM</span>
             </div>
-          </div>
+          </Link>
           
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-lowest/10 border border-white/10 backdrop-blur-md text-xs text-emerald-300 font-medium">
-            <ShieldCheck className="w-3.5 h-3.5 text-secondary" />
-            GHG Scope 1-3 Compliant
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-xs text-emerald-300 font-medium shadow-inner">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            GHG Scope 1-3 Verified
           </div>
         </div>
 
-        {/* Center Hero Card & Graphic */}
-        <div className="relative z-10 my-auto py-8">
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black/40 backdrop-blur-md p-2 group hover:border-secondary/40 transition-all duration-500">
-            <div className="relative h-64 sm:h-72 w-full rounded-xl overflow-hidden">
+        {/* Center Visual Banner */}
+        <div className="relative z-10 my-auto py-8 max-w-xl mx-auto w-full">
+          <div className="relative rounded-2xl overflow-hidden border border-emerald-500/20 shadow-2xl bg-slate-950/60 backdrop-blur-md p-2">
+            <div className="relative h-56 sm:h-64 w-full rounded-xl overflow-hidden">
               <Image 
                 src="/images/login_hero.png" 
                 alt="KarboNova Dashboard Visual"
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
+                className="object-cover opacity-90 hover:scale-105 transition-transform duration-700"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
               
-              {/* Floating Badge */}
-              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-surface-container-lowest/80 backdrop-blur-md border border-white/15 flex items-center justify-between">
+              {/* Badge overlay */}
+              <div className="absolute bottom-3 left-3 right-3 p-3.5 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-700/80 flex items-center justify-between shadow-lg">
                 <div>
-                  <div className="text-xs text-on-surface-variant font-medium">Acme Manufacturing • Passport #KRB-MH-000124</div>
-                  <div className="text-body-md font-bold text-white flex items-center gap-2 mt-0.5">
-                    180 tCO₂e Saved <span className="text-xs text-secondary font-bold bg-secondary/10 px-2 py-0.5 rounded-md border border-secondary/20">68% Carbon Readiness</span>
+                  <div className="text-xs text-slate-400 font-medium">Acme Manufacturing • Passport #KRB-MH-000124</div>
+                  <div className="text-sm font-bold text-white flex items-center gap-2 mt-0.5">
+                    180 tCO₂e Saved <span className="text-xs font-semibold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">68% Carbon Readiness</span>
                   </div>
                 </div>
-                <Award className="w-6 h-6 text-secondary shrink-0" />
+                <Award className="w-5 h-5 text-emerald-400 shrink-0" />
               </div>
             </div>
           </div>
 
           <div className="mt-8 space-y-3">
-            <h2 className="text-headline-md font-extrabold text-white tracking-tight leading-tight">
-              Empowering Indian MSMEs with Automated Carbon Accounting
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
+              Automated Scope Emissions Accounting for Indian MSMEs
             </h2>
-            <p className="text-body-md text-emerald-100/70 max-w-lg">
-              Calculate scope emissions with India CEA grid factors (0.716 kg CO₂e/kWh), manage compliance evidence, and unlock green financing.
+            <p className="text-sm sm:text-base text-slate-300/80 leading-relaxed">
+              Calculate facility carbon footprints using India CEA grid standards (0.716 kg CO₂e/kWh), manage evidence documents, and access green finance.
             </p>
           </div>
         </div>
 
-        {/* Footer Metrics */}
-        <div className="relative z-10 pt-6 border-t border-white/10 grid grid-cols-3 gap-4 text-left">
+        {/* Bottom Trust Highlights */}
+        <div className="relative z-10 pt-6 border-t border-slate-800/80 grid grid-cols-3 gap-4 text-left">
           <div>
-            <div className="text-headline-xs font-extrabold text-white">500+</div>
-            <div className="text-xs text-emerald-200/60 font-medium">MSMEs Onboarded</div>
+            <div className="text-xl sm:text-2xl font-bold text-white">500+</div>
+            <div className="text-xs text-slate-400 font-medium">MSMEs Active</div>
           </div>
           <div>
-            <div className="text-headline-xs font-extrabold text-secondary">42,000t</div>
-            <div className="text-xs text-emerald-200/60 font-medium">CO₂e Quantified</div>
+            <div className="text-xl sm:text-2xl font-bold text-emerald-400">42,000t</div>
+            <div className="text-xs text-slate-400 font-medium">CO₂e Tracked</div>
           </div>
           <div>
-            <div className="text-headline-xs font-extrabold text-white">100%</div>
-            <div className="text-xs text-emerald-200/60 font-medium">CEA & GHG Verifiable</div>
+            <div className="text-xl sm:text-2xl font-bold text-white">100%</div>
+            <div className="text-xs text-slate-400 font-medium">CEA Verifiable</div>
           </div>
         </div>
       </div>
 
-      {/* RIGHT PANEL - Authentication Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-[#0d1412]">
-        <div className="w-full max-w-md space-y-8">
+      {/* RIGHT PANEL - Clean High-Contrast Auth Form */}
+      <div className="lg:w-1/2 flex items-center justify-center p-6 sm:p-12 md:p-16 bg-[#0a0f1d]">
+        <div className="w-full max-w-md mx-auto space-y-7">
           
-          {/* Mobile Header Logo */}
-          <div className="flex lg:hidden items-center justify-center gap-2 mb-6">
-            <Leaf className="w-7 h-7 text-secondary" />
-            <span className="text-title-lg font-bold text-white">KarboNova</span>
-          </div>
-
-          {/* Form Title & Subtitle */}
-          <div className="text-left space-y-2">
-            <h1 className="text-headline-sm sm:text-headline-md font-bold text-white tracking-tight">
+          {/* Header Title */}
+          <div className="space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
               Sign in to KarboNova
             </h1>
-            <p className="text-body-sm text-on-surface-variant">
-              Access your MSME Carbon Passport, evidence vault, and opportunity engine.
+            <p className="text-sm text-slate-400 leading-relaxed">
+              Access your MSME Carbon Passport, evidence vault, and calculation engine.
             </p>
           </div>
 
-          {/* Role Selection Tabs */}
+          {/* Role Selector Tabs */}
           <div className="space-y-2">
-            <label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider block">
-              Select Operating Role
+            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+              Operating Role
             </label>
-            <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#141f1c] rounded-xl border border-outline-variant/20">
+            <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-900/90 rounded-xl border border-slate-800">
               <button
                 type="button"
                 onClick={() => handleRoleChange('admin')}
                 className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-lg text-xs font-bold transition-all ${
                   role === 'admin' 
-                    ? 'bg-secondary text-on-secondary shadow-md' 
-                    : 'text-on-surface-variant hover:text-white hover:bg-white/5'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/30' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
                 }`}
               >
                 <Building2 className="w-4 h-4 mb-1" />
-                Facility Admin
+                <span>Facility Admin</span>
               </button>
               
               <button
@@ -183,12 +180,12 @@ export default function LoginPage() {
                 onClick={() => handleRoleChange('auditor')}
                 className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-lg text-xs font-bold transition-all ${
                   role === 'auditor' 
-                    ? 'bg-secondary text-on-secondary shadow-md' 
-                    : 'text-on-surface-variant hover:text-white hover:bg-white/5'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/30' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4 mb-1" />
-                Green Auditor
+                <span>Green Auditor</span>
               </button>
 
               <button
@@ -196,41 +193,41 @@ export default function LoginPage() {
                 onClick={() => handleRoleChange('bank')}
                 className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-lg text-xs font-bold transition-all ${
                   role === 'bank' 
-                    ? 'bg-secondary text-on-secondary shadow-md' 
-                    : 'text-on-surface-variant hover:text-white hover:bg-white/5'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/30' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
                 }`}
               >
                 <Briefcase className="w-4 h-4 mb-1" />
-                Bank / Financier
+                <span>Bank / Financier</span>
               </button>
             </div>
           </div>
 
-          {/* Auto-fill Quick Button */}
+          {/* Quick Auto-fill Banner */}
           <button
             type="button"
             onClick={() => handleRoleChange(role)}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold hover:bg-secondary/20 transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/40 transition-colors"
           >
-            <Sparkles className="w-3.5 h-3.5 text-secondary" />
-            Auto-fill {role === 'admin' ? 'Acme Manufacturing Admin' : role === 'auditor' ? 'Certified Verifier' : 'SIDBI Green Bank'} Credentials
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Auto-fill demo credentials for {role === 'admin' ? 'Facility Admin' : role === 'auditor' ? 'Certified Verifier' : 'Bank Financier'}</span>
           </button>
 
-          {/* Error Message Alert */}
+          {/* Error Message */}
           {errorMsg && (
-            <div className="p-3.5 rounded-lg bg-error/10 border border-error/30 text-error text-xs font-medium animate-in fade-in">
+            <div className="p-3.5 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-medium">
               {errorMsg}
             </div>
           )}
 
-          {/* Authentication Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-label-md text-on-surface-variant mb-1.5 font-semibold" htmlFor="email">
-                BUSINESS EMAIL ADDRESS
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="email">
+                Business Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/60" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input 
                   type="email" 
                   id="email" 
@@ -238,22 +235,22 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-[#15221e] border border-outline-variant/30 rounded-xl text-body-md text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
                 />
               </div>
             </div>
 
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-label-md text-on-surface-variant font-semibold" htmlFor="password">
-                  PASSWORD
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider" htmlFor="password">
+                  Password
                 </label>
-                <a href="#" className="text-xs text-secondary font-semibold hover:underline">
+                <a href="#" className="text-xs text-emerald-400 hover:underline font-medium">
                   Forgot password?
                 </a>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/60" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input 
                   type={showPassword ? 'text' : 'password'} 
                   id="password" 
@@ -261,39 +258,39 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-11 pr-11 py-3 bg-[#15221e] border border-outline-variant/30 rounded-xl text-body-md text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                  className="w-full pl-10 pr-10 py-3 bg-slate-900 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-white transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input 
                   type="checkbox" 
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded bg-[#15221e] border-outline-variant text-secondary focus:ring-secondary" 
+                  className="w-4 h-4 rounded bg-slate-900 border-slate-700 text-emerald-500 focus:ring-emerald-500" 
                 />
-                <span className="text-body-sm text-on-surface-variant">Remember this device</span>
+                <span className="text-xs text-slate-300">Remember this device</span>
               </label>
             </div>
 
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-secondary text-on-secondary rounded-xl font-bold text-body-md hover:bg-[#005049] active:scale-[0.99] transition-all shadow-lg shadow-secondary/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer group"
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-950/40 disabled:opacity-70 disabled:cursor-not-allowed group cursor-pointer"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-on-secondary border-t-transparent rounded-full animate-spin"></div>
-                  <span>Authenticating...</span>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Signing in...</span>
                 </div>
               ) : (
                 <>
@@ -304,34 +301,34 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Social / SSO Divider */}
-          <div className="relative my-6">
+          {/* SSO Divider */}
+          <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-outline-variant/20"></div>
+              <div className="w-full border-t border-slate-800"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-[#0d1412] px-3 text-on-surface-variant font-medium">Or continue with</span>
+              <span className="bg-[#0a0f1d] px-3 text-slate-500 font-medium">Or continue with</span>
             </div>
           </div>
 
-          {/* Single Sign On Button */}
+          {/* SSO Button */}
           <button 
             type="button"
             onClick={() => {
               setIsLoading(true);
-              setTimeout(() => router.push('/dashboard'), 600);
+              setTimeout(() => router.push('/dashboard'), 500);
             }}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-[#141f1c] hover:bg-[#1a2925] border border-outline-variant/30 rounded-xl text-body-sm font-semibold text-white transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-semibold text-slate-200 transition-colors cursor-pointer"
           >
             <Globe2 className="w-4 h-4 text-emerald-400" />
             <span>Sign in with Enterprise SSO</span>
           </button>
 
-          {/* Footer Signup Link */}
-          <p className="text-center text-body-sm text-on-surface-variant pt-4">
-            Don't have an MSME Account?{' '}
-            <Link href="/dashboard/opportunity" className="text-secondary font-bold hover:underline">
-              Run Free Opportunity Assessment
+          {/* Footer Signup */}
+          <p className="text-center text-xs text-slate-400 pt-2">
+            Don't have an MSME account?{' '}
+            <Link href="/dashboard/opportunity" className="text-emerald-400 font-semibold hover:underline">
+              Run Free Assessment
             </Link>
           </p>
 
