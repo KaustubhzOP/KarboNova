@@ -55,6 +55,57 @@ export default function OpportunityAssessmentPage() {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
+  const [isCreating, setIsCreating] = useState(false);
+
+  const handleCreateProjectWorkspace = async () => {
+    setIsCreating(true);
+    try {
+      // 1. Save Assessment in PostgreSQL
+      await fetch('/api/opportunity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: formData.businessName,
+          state: formData.state,
+          industry: formData.industry,
+          annualElectricitySpend: formData.annualElectricitySpend,
+          primaryPowerSource: formData.primaryPowerSource,
+          hasSolar: formData.hasSolar,
+          hasEnergyEfficientMotors: formData.hasEnergyEfficientMotors,
+        }),
+      });
+
+      // 2. Create Project in PostgreSQL
+      const projSlug = formData.businessName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      const projId = `${projSlug || 'project'}-solar-efficiency`;
+
+      await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: projId,
+          name: `${formData.businessName} - Decarbonization Project`,
+          description: `Rooftop Solar PV & Motor Efficiency upgrade for ${formData.businessName} in ${formData.state}. Targeted reduction: ${assessmentResult.estimatedReduction} tCO₂e/yr.`,
+          status: 'Documentation',
+          estimatedReduction: assessmentResult.estimatedReduction,
+          evidenceDocsCount: '4/10',
+          readiness: assessmentResult.evidenceCompleteness,
+        }),
+      });
+
+      // 3. Redirect to newly created workspace
+      router.push(`/dashboard/projects/${projId}`);
+    } catch (err) {
+      console.error('Failed to create project from assessment:', err);
+      router.push('/dashboard/projects/solar-energy-efficiency');
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   return (
     <div className="space-y-8 pb-12 max-w-4xl mx-auto">
       <div>
@@ -377,10 +428,18 @@ export default function OpportunityAssessmentPage() {
                 <RotateCcw className="w-4 h-4" /> Restart Check
               </button>
               <button 
-                onClick={() => router.push('/dashboard/projects/solar-energy-efficiency')}
-                className="flex items-center gap-2 px-6 py-2.5 bg-secondary text-on-secondary rounded-lg font-bold text-body-sm hover:bg-[#005049] transition-all shadow-sm"
+                onClick={handleCreateProjectWorkspace}
+                disabled={isCreating}
+                className="flex items-center gap-2 px-6 py-2.5 bg-secondary text-on-secondary rounded-lg font-bold text-body-sm hover:bg-[#005049] transition-all shadow-sm disabled:opacity-50 cursor-pointer"
               >
-                Create Project Workspace <PlusCircle className="w-4 h-4" />
+                {isCreating ? (
+                  <span>Saving & Creating Workspace...</span>
+                ) : (
+                  <>
+                    <span>Create Project Workspace</span>
+                    <PlusCircle className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </div>
           )}

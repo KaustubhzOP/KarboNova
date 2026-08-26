@@ -27,6 +27,20 @@ export default function ProjectWorkspacePage() {
   const projectId = (params?.id as string) || 'solar-energy-efficiency';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [projectDetails, setProjectDetails] = useState<{
+    name: string;
+    description: string;
+    estimatedReduction: number;
+    status: 'Documentation' | 'Planning' | 'Verification';
+    readiness: number;
+  }>({
+    name: 'Solar & Energy Efficiency',
+    description: 'Rooftop solar PV installation combined with IE4 motor upgrades across primary manufacturing line.',
+    estimatedReduction: 180,
+    status: 'Documentation',
+    readiness: 68,
+  });
+
   const [projectStatus, setProjectStatus] = useState<'Documentation' | 'Planning' | 'Verification'>('Documentation');
   const [readiness, setReadiness] = useState(68);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -38,15 +52,41 @@ export default function ProjectWorkspacePage() {
   const [evidenceList, setEvidenceList] = useState<EvidenceDocument[]>([]);
 
   useEffect(() => {
+    fetchProjectDetails();
     fetchProjectEvidence();
   }, [projectId]);
+
+  const fetchProjectDetails = async () => {
+    try {
+      const res = await fetch('/api/projects');
+      if (res.ok) {
+        const projects = await res.json();
+        const found = projects.find((p: any) => p.id === projectId);
+        if (found) {
+          setProjectDetails({
+            name: found.name,
+            description: found.description,
+            estimatedReduction: Number(found.estimatedReduction),
+            status: found.status,
+            readiness: Number(found.readiness) || 68,
+          });
+          setProjectStatus(found.status);
+          setReadiness(Number(found.readiness) || 68);
+          if (found.status === 'Verification') {
+            setIsSubmitted(true);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch project details:', err);
+    }
+  };
 
   const fetchProjectEvidence = async () => {
     try {
       const res = await fetch('/api/evidence');
       if (res.ok) {
         const data: EvidenceDocument[] = await res.json();
-        // filter for this project or show all
         setEvidenceList(data);
       }
     } catch (err) {
@@ -69,7 +109,7 @@ export default function ProjectWorkspacePage() {
           category: file.type.includes('image') ? 'Site Photos' : 'Invoices',
           date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
           source: 'Direct Upload',
-          project: 'Solar & Energy Efficiency',
+          project: projectDetails.name,
           status: 'Verified',
           size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
           fileData: base64Data,
@@ -85,7 +125,22 @@ export default function ProjectWorkspacePage() {
         if (res.ok) {
           showToast(`File "${file.name}" uploaded to Evidence Vault!`);
           fetchProjectEvidence();
-          setReadiness((prev) => Math.min(prev + 10, 100));
+          const newReadiness = Math.min(readiness + 10, 100);
+          setReadiness(newReadiness);
+
+          // Update readiness in PostgreSQL
+          fetch('/api/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: projectId,
+              name: projectDetails.name,
+              description: projectDetails.description,
+              status: projectStatus,
+              estimatedReduction: projectDetails.estimatedReduction,
+              readiness: newReadiness,
+            }),
+          });
         }
       };
       reader.readAsDataURL(file);
@@ -97,15 +152,31 @@ export default function ProjectWorkspacePage() {
     }
   };
 
-  const handleSubmitForReview = () => {
+  const handleSubmitForReview = async () => {
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: projectId,
+          name: projectDetails.name,
+          description: projectDetails.description,
+          status: 'Verification',
+          estimatedReduction: projectDetails.estimatedReduction,
+          readiness: 95,
+        }),
+      });
+
       setProjectStatus('Verification');
       setReadiness(95);
       setIsSubmitted(true);
       showToast('Project successfully submitted to Carbon Auditors for verification!');
-    }, 800);
+    } catch (err) {
+      console.error('Failed to submit project:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const showToast = (msg: string) => {
@@ -156,10 +227,10 @@ export default function ProjectWorkspacePage() {
               {projectStatus} Stage
             </div>
             <h1 className="text-2xl sm:text-display-md font-bold text-primary">
-              Solar & Energy Efficiency Upgrade
+              {projectDetails.name}
             </h1>
             <p className="text-body-md sm:text-body-lg text-on-surface-variant mt-1 max-w-2xl">
-              Rooftop solar PV installation combined with IE4 motor upgrades across primary manufacturing line.
+              {projectDetails.description}
             </p>
           </div>
 
@@ -205,7 +276,7 @@ export default function ProjectWorkspacePage() {
         <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30 shadow-xs">
           <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Estimated Impact</div>
           <div className="text-headline-lg font-bold text-secondary flex items-center gap-2">
-            <TrendingDown className="w-6 h-6" /> 180 <span className="text-body-md font-normal text-on-surface-variant">tCO₂e/yr</span>
+            <TrendingDown className="w-6 h-6" /> {projectDetails.estimatedReduction} <span className="text-body-md font-normal text-on-surface-variant">tCO₂e/yr</span>
           </div>
         </div>
 
