@@ -64,4 +64,7 @@ export interface AssessmentResult {
   evidenceCompleteness: number;
   confidence: 'High' | 'Medium' | 'Low';
   recommendedProjects: string[];
+  opportunityScore: number;
+  pursueRecommendation: string;
+  recommendationLevel: 'High Feasibility' | 'Moderate Feasibility' | 'Low Feasibility';
 }

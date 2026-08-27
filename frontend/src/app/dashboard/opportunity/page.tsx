@@ -311,6 +311,38 @@ export default function OpportunityAssessmentPage() {
               </p>
             </div>
 
+            {/* Prominent Carbon Opportunity Score & Recommendation Banner */}
+            <div className="bg-emerald-950/5 border border-emerald-500/30 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+              <div className="flex items-center gap-5">
+                <div className="w-20 h-20 rounded-2xl bg-emerald-600 text-white flex flex-col items-center justify-center shadow-lg shadow-emerald-600/20 shrink-0">
+                  <span className="text-2xl font-bold leading-none">{assessmentResult.opportunityScore}</span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider mt-1 opacity-90">/ 100</span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-md">
+                      {assessmentResult.recommendationLevel}
+                    </span>
+                    <span className="text-xs text-on-surface-variant">• Carbon Feasibility Score</span>
+                  </div>
+                  <h3 className="text-headline-sm font-bold text-primary mt-1">
+                    Carbon Opportunity Assessment Score
+                  </h3>
+                  <p className="text-xs sm:text-body-sm text-on-surface-variant mt-1 leading-relaxed max-w-xl">
+                    {assessmentResult.pursueRecommendation}
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={handleCreateProjectWorkspace}
+                disabled={isCreating}
+                className="w-full md:w-auto px-5 py-3 bg-secondary text-on-secondary rounded-xl font-bold text-body-sm hover:bg-[#005049] transition-all shadow-md shrink-0 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Pursue Opportunity Now</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/20 text-center">
                 <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Estimated Annual Reduction</div>

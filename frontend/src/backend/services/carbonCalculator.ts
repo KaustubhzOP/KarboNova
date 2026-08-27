@@ -89,6 +89,23 @@ export class CarbonCalculatorService {
     if (motorReduction > 0) recommendedProjects.push('IE4 Super-Premium Efficiency Motors Upgrade');
     if (dgReduction > 0) recommendedProjects.push('DG Fuel Optimization & Waste Heat Recovery');
 
+    // 6. Carbon Opportunity Score Calculation (0 - 100)
+    // Formula: Reduction Share (65%) + Evidence Completeness (35%)
+    const reductionRatio = baselineEmissions > 0 ? (estimatedReduction / baselineEmissions) : 0;
+    const rawScore = Math.round((reductionRatio * 180) + (evidenceCompleteness * 0.35));
+    const opportunityScore = Math.min(98, Math.max(35, rawScore));
+
+    let recommendationLevel: 'High Feasibility' | 'Moderate Feasibility' | 'Low Feasibility' = 'High Feasibility';
+    let pursueRecommendation = 'Strong Opportunity: Highly recommended to pursue decarbonization project. High ROI and clear carbon credit eligibility.';
+
+    if (opportunityScore < 50) {
+      recommendationLevel = 'Low Feasibility';
+      pursueRecommendation = 'Low Feasibility: Baseline emissions are minimal. Gather full 12-month utility records to re-evaluate viability.';
+    } else if (opportunityScore < 75) {
+      recommendationLevel = 'Moderate Feasibility';
+      pursueRecommendation = 'Moderate Opportunity: Viable project. Complete your equipment documentation to boost credit readiness.';
+    }
+
     return {
       baselineEmissions: Math.round(baselineEmissions),
       estimatedKwh: Math.round(estimatedKwh),
@@ -98,7 +115,10 @@ export class CarbonCalculatorService {
       dgReduction: roundedDg,
       evidenceCompleteness,
       confidence,
-      recommendedProjects
+      recommendedProjects,
+      opportunityScore,
+      pursueRecommendation,
+      recommendationLevel,
     };
   }
 }
