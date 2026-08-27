@@ -312,23 +312,23 @@ export default function OpportunityAssessmentPage() {
             </div>
 
             {/* Prominent Carbon Opportunity Score & Recommendation Banner */}
-            <div className="bg-emerald-950/5 border border-emerald-500/30 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-              <div className="flex items-center gap-5">
+            <div className="bg-emerald-950/5 border border-emerald-500/30 rounded-2xl p-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 shadow-sm">
+              <div className="flex items-start sm:items-center gap-5 flex-1 min-w-0">
                 <div className="w-20 h-20 rounded-2xl bg-emerald-600 text-white flex flex-col items-center justify-center shadow-lg shadow-emerald-600/20 shrink-0">
                   <span className="text-2xl font-bold leading-none">{assessmentResult.opportunityScore}</span>
                   <span className="text-[10px] uppercase font-bold tracking-wider mt-1 opacity-90">/ 100</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-md">
                       {assessmentResult.recommendationLevel}
                     </span>
                     <span className="text-xs text-on-surface-variant">• Carbon Feasibility Score</span>
                   </div>
-                  <h3 className="text-headline-sm font-bold text-primary mt-1">
+                  <h3 className="text-headline-sm font-bold text-primary">
                     Carbon Opportunity Assessment Score
                   </h3>
-                  <p className="text-xs sm:text-body-sm text-on-surface-variant mt-1 leading-relaxed max-w-xl">
+                  <p className="text-xs sm:text-body-sm text-on-surface-variant leading-relaxed">
                     {assessmentResult.pursueRecommendation}
                   </p>
                 </div>
@@ -336,10 +336,10 @@ export default function OpportunityAssessmentPage() {
               <button 
                 onClick={handleCreateProjectWorkspace}
                 disabled={isCreating}
-                className="w-full md:w-auto px-5 py-3 bg-secondary text-on-secondary rounded-xl font-bold text-body-sm hover:bg-[#005049] transition-all shadow-md shrink-0 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full md:w-auto px-6 py-3 bg-secondary text-on-secondary rounded-xl font-bold text-body-sm hover:bg-[#005049] transition-all shadow-md shrink-0 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Pursue Opportunity Now</span>
-                <ArrowRight className="w-4 h-4" />
+                <span className="whitespace-nowrap">Pursue Opportunity Now</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </button>
             </div>
 
